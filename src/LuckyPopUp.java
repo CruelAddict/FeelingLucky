@@ -28,6 +28,7 @@ public class LuckyPopUp extends AnAction {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        textToDisplay = beautify(textToDisplay);
         JTextArea popLabel = new JTextArea(textToDisplay, 25, 50);
         JScrollPane scrollPane = new JScrollPane(popLabel);
         scrollPane.setSize(new Dimension(500,500));
@@ -36,17 +37,34 @@ public class LuckyPopUp extends AnAction {
         //creating a popup
         JBPopup jbPopup = JBPopupFactory.getInstance().createComponentPopupBuilder(popPanel, popPanel)
                 .createPopup();
-        jbPopup.setSize(new Dimension(500, 500));
+        //jbPopup.setSize(new Dimension(500, 500));
         jbPopup.showInFocusCenter();
         jbPopup.moveToFitScreen();
 
 
     }
 
-    public String getWebData(String url) throws IOException {
+    private String getWebData(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
         Elements answers = doc.getElementsByAttributeValue("class", "answer accepted-answer");
 
         return answers.text();
+    }
+
+    private String beautify(String text){
+        int counter = 0;
+        int lineLength = 40;
+        for(int i = 0; i < text.length()-1; i++)
+        {
+            if (text.charAt(i) == '\n'){
+                counter = -1;
+            }
+            if ( text.charAt(i) == ' ' && counter >= lineLength){
+                text = text.substring(0, i)+"\n"+text.substring(i+1, text.length()-1);
+                counter = -1;
+            };
+            counter++;
+        }
+        return text;
     }
 }
