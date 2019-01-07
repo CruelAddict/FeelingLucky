@@ -48,6 +48,11 @@ public class LuckyPopUp extends AnAction {
     private String getBestAnswer(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
         Elements answers = doc.getElementsByAttributeValue("class", "answer accepted-answer");
+        if (answers.size() == 0)
+        {
+            answers = doc.getElementsByAttributeValue("class", "answer");
+
+        }
         answers = answers.attr("class", "post-text");
         //answers = answers.attr("class", "answercell post-layout--right");
         answers = answers.attr("itemprop", "text");
